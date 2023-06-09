@@ -90,7 +90,7 @@ return (
               auth.signOut();
               dispatch(setUser(null));
               dispatch(resetSignee());
-              navigate('/');
+              window.location.href = '/';
             }}
             accessibilityLabel="Sign out of your account"
             icon="logout"
