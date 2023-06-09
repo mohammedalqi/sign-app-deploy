@@ -69,7 +69,7 @@ return (
   <Box display="flex" justifyContent="space-between" flexDirection="row" paddingY={1} paddingX={3} color="white">
     <Column span={11}>
       <Box padding={1}>
-        <Link to="/masuk">
+        <Link to="https://pmsi-sign.web.app/">
           <Image src="images/logo.png" alt="Deskripsi gambar" />
         </Link>
       </Box>
@@ -90,7 +90,7 @@ return (
               auth.signOut();
               dispatch(setUser(null));
               dispatch(resetSignee());
-              navigate('/');
+              navigate('https://pmsi-sign.web.app/');
             }}
             accessibilityLabel="Sign out of your account"
             icon="logout"
