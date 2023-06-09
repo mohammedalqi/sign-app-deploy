@@ -90,7 +90,7 @@ return (
               auth.signOut();
               dispatch(setUser(null));
               dispatch(resetSignee());
-              navigate('/masuk');
+              navigate('/');
             }}
             accessibilityLabel="Sign out of your account"
             icon="logout"
