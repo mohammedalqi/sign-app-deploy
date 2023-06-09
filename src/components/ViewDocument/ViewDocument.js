@@ -46,7 +46,7 @@ const ViewDocument = () => {
   };
 
   const doneViewing = async () => {
-    navigate('/');
+    navigate('/masuk');
   }
 
   return (
@@ -54,7 +54,7 @@ const ViewDocument = () => {
       <Box display="flex" direction="row" flex="grow">
         <Column span={2}>
           <Box padding={3}>
-            <Heading size="md">View Document</Heading>
+            <Heading size="md">Tinjau Dokumen</Heading>
           </Box>
           <Box padding={3}>
             <Row gap={1}>
@@ -63,7 +63,7 @@ const ViewDocument = () => {
                   <Button
                     onClick={download}
                     accessibilityLabel="download signed document"
-                    text="Download"
+                    text="Unduh"
                     iconEnd="download"
                   />
                 </Box>
@@ -71,7 +71,7 @@ const ViewDocument = () => {
                   <Button
                     onClick={doneViewing}
                     accessibilityLabel="complete signing"
-                    text="Done viewing"
+                    text="Selesai meninjau"
                     iconEnd="check"
                   />
                 </Box>

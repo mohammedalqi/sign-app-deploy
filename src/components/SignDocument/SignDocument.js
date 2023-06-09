@@ -103,7 +103,17 @@ const SignDocument = () => {
   const completeSigning = async () => {
     const xfdf = await annotationManager.exportAnnotations({ widgets: false, links: false });
     await updateDocumentToSign(docId, email, xfdf);
-    navigate('/');
+    navigate('/masuk');
+  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file.size > 1024 * 1024) {
+      alert('Ukuran file melebihi batas maksimal 1 MB.');
+      return;
+    }
+    // Proses pengunggahan tanda tangan
+    // ...
   }
 
   return (
@@ -111,7 +121,7 @@ const SignDocument = () => {
       <Box display="flex" direction="row" flex="grow">
         <Column span={2}>
           <Box padding={3}>
-            <Heading size="md">Sign Document</Heading>
+            <Heading size="md">Tandatangani Dokumen</Heading>
           </Box>
           <Box padding={3}>
             <Row gap={1}>
@@ -120,7 +130,7 @@ const SignDocument = () => {
                   <Button
                     onClick={nextField}
                     accessibilityLabel="next field"
-                    text="Next field"
+                    text="Bagian selanjutnya"
                     iconEnd="arrow-forward"
                   />
                 </Box>
@@ -128,7 +138,7 @@ const SignDocument = () => {
                   <Button
                     onClick={prevField}
                     accessibilityLabel="Previous field"
-                    text="Previous field"
+                    text="Bagian sebelumnya"
                     iconEnd="arrow-back"
                   />
                 </Box>
@@ -136,7 +146,7 @@ const SignDocument = () => {
                   <Button
                     onClick={completeSigning}
                     accessibilityLabel="complete signing"
-                    text="Complete signing"
+                    text="Selesai ditandatangani"
                     iconEnd="compose"
                   />
                 </Box>

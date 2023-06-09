@@ -35,10 +35,10 @@ const SignedList = () => {
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>
-                    <Text weight="bold">From</Text>
+                    <Text weight="bold">Dari</Text>
                   </Table.HeaderCell>
                   <Table.HeaderCell>
-                    <Text weight="bold">When</Text>
+                    <Text weight="bold">Waktu</Text>
                   </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
@@ -51,16 +51,16 @@ const SignedList = () => {
                       ))}
                     </Table.Cell>
                     <Table.Cell>
-                      <Text>{doc.signedTime ? new Date(doc.signedTime.seconds*1000).toDateString() : ''}</Text>
+                    <Text>{doc.signedTime ? new Date(doc.signedTime.seconds*1000).toLocaleDateString('id-ID') : ''}</Text>
                     </Table.Cell>
                     <Table.Cell>
                       <Button
                         onClick={event => {
                           const { docRef, docId } = doc;
                           dispatch(setDocToView({ docRef, docId }));
-                          navigate(`/viewDocument`);
+                          navigate(`/lihat`);
                         }}
-                        text="View"
+                        text="Lihat"
                         color="blue"
                         inline
                       />
@@ -70,7 +70,7 @@ const SignedList = () => {
               </Table.Body>
             </Table>
           ) : (
-            'You do not have any documents to review'
+            'Anda tidak memiliki dokumen untuk ditinjau'
           )}
         </div>
       )}

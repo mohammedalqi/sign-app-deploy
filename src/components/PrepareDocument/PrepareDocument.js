@@ -17,10 +17,14 @@ import { selectUser } from '../../firebase/firebaseSlice';
 import WebViewer from '@pdftron/webviewer';
 import 'gestalt/dist/gestalt.css';
 import './PrepareDocument.css';
+import '../Profile/Profile.css'
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 const PrepareDocument = () => {
   const [instance, setInstance] = useState(null);
   const [dropPoint, setDropPoint] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const dispatch = useDispatch();
 
@@ -65,22 +69,78 @@ const PrepareDocument = () => {
         drop(e, instance);
       });
 
-      filePicker.current.onchange = e => {
+      filePicker.current.onchange = (e) => {
         const file = e.target.files[0];
         if (file) {
-          instance.UI.loadDocument(file);
+          if (file.size <= MAX_FILE_SIZE) {
+            setErrorMessage('');
+            instance.UI.loadDocument(file);
+          } else {
+            setErrorMessage('Ukuran file melebihi batas maksimum (5 MB).');
+            // instance.UI.loadDocument(false);
+            return false;
+          }
         }
       };
     });
   }, []);
 
+  
+  // const processAnnotations = async (annotationsList, annotationManager) => {
+  // // Initialize arrays to store annotations to delete and draw
+  // const annotsToDelete = [];
+  // const annotsToDraw = [];
+
+  // // Process annotations logic here
+  // for (const annotation of annotationsList) {
+  //   // Perform your processing logic for each annotation
+  //   // ...
+
+  //   // Determine if the annotation should be deleted or drawn
+  //   const shouldDelete = false; // Anotasi tidak dihapus
+  //   const shouldDraw = file.size <= MAX_FILE_SIZE;
+
+  //   // Add the annotation to the respective array
+  //   if (shouldDelete) {
+  //     annotsToDelete.push(annotation);
+  //   }
+  //   if (shouldDraw) {
+  //     annotsToDraw.push(annotation);
+  //   }
+  // }
+  // // Return the annotations to delete and draw
+  // return {
+  //   annotsToDelete,
+  //   annotsToDraw,
+  //   };
+  // };
+
+
   const applyFields = async () => {
+    // Check if there is a document loaded
+    if (!instance) return;
+
     const { Annotations, documentViewer } = instance.Core;
     const annotationManager = documentViewer.getAnnotationManager();
     const fieldManager = annotationManager.getFieldManager();
     const annotationsList = annotationManager.getAnnotationsList();
     const annotsToDelete = [];
     const annotsToDraw = [];
+
+        // // Apply fields only if there are annotations
+        // if (annotationsList.length > 0) {
+        //   const { annotsToDelete, annotsToDraw } = await processAnnotations(
+        //     annotationsList,
+        //     annotationManager
+        //   );
+    
+        //   // Delete old annotations
+        //   annotationManager.deleteAnnotations(annotsToDelete, null, true);
+    
+        //   // Refresh viewer
+        //   await annotationManager.drawAnnotationsFromList(annotsToDraw);
+        //   await uploadForSigning();
+        // }
 
     await Promise.all(
       annotationsList.map(async (annot, index) => {
@@ -254,10 +314,21 @@ const PrepareDocument = () => {
     annotationManager.selectAnnotation(textAnnot);
   };
 
+  const handleFileChange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= MAX_FILE_SIZE && file.type === 'application/pdf') {
+        instance.UI.loadDocument(file);
+      } else {
+        alert('File harus berformat PDF dan tidak boleh melebihi 5 MB.');
+      }
+    }
+  };
+
   const uploadForSigning = async () => {
     // upload the PDF with fields as AcroForm
     const storageRef = storage.ref();
-    const referenceString = `docToSign/${uid}${Date.now()}.pdf`;
+    const referenceString = `SIgn/${uid}${Date.now()}.pdf`;
     const docRef = storageRef.child(referenceString);
     const { documentViewer, annotationManager } = instance.Core;
     const doc = documentViewer.getDocument();
@@ -275,7 +346,7 @@ const PrepareDocument = () => {
     });
     await addDocumentToSign(uid, email, referenceString, emails);
     dispatch(resetSignee());
-    navigate('/');
+    navigate('/masuk');
   };
 
   const dragOver = e => {
@@ -317,13 +388,13 @@ const PrepareDocument = () => {
       <Box display="flex" direction="row" flex="grow">
         <Column span={2}>
           <Box padding={3}>
-            <Heading size="md">Prepare Document</Heading>
+            <Heading size="md">Siapkan Dokumen</Heading>
           </Box>
           <Box padding={3}>
             <Row gap={1}>
               <Stack>
                 <Box padding={2}>
-                  <Text>{'Step 1'}</Text>
+                  <Text>{'Langkah 1'}</Text>
                 </Box>
                 <Box padding={2}>
                   <Button
@@ -333,7 +404,7 @@ const PrepareDocument = () => {
                       }
                     }}
                     accessibilityLabel="upload a document"
-                    text="Upload a document"
+                    text="Unggah dokumen"
                     iconEnd="add-circle"
                   />
                 </Box>
@@ -342,7 +413,7 @@ const PrepareDocument = () => {
             <Row>
               <Stack>
                 <Box padding={2}>
-                  <Text>{'Step 2'}</Text>
+                  <Text>{'Langkah 2'}</Text>
                 </Box>
                 <Box padding={2}>
                   <SelectList
@@ -350,8 +421,8 @@ const PrepareDocument = () => {
                     name="assign"
                     onChange={({ value }) => setAssignee(value)}
                     options={assigneesValues}
-                    placeholder="Select recipient"
-                    label="Adding signature for"
+                    placeholder="Pilih penerima"
+                    label="Tambahkan tanda tangan untuk:"
                     value={assignee}
                   />
                 </Box>
@@ -364,7 +435,7 @@ const PrepareDocument = () => {
                     <Button
                       onClick={() => addField('SIGNATURE')}
                       accessibilityLabel="add signature"
-                      text="Add signature"
+                      text="Tambahkan tanda tangan"
                       iconEnd="compose"
                     />
                   </div>
@@ -378,7 +449,7 @@ const PrepareDocument = () => {
                     <Button
                       onClick={() => addField('TEXT')}
                       accessibilityLabel="add text"
-                      text="Add text"
+                      text="Tambahkan teks"
                       iconEnd="text-sentence-case"
                     />
                   </div>
@@ -392,7 +463,7 @@ const PrepareDocument = () => {
                     <Button
                       onClick={() => addField('DATE')}
                       accessibilityLabel="add date field"
-                      text="Add date"
+                      text="Tambahkan tanggal"
                       iconEnd="calendar"
                     />
                   </div>
@@ -402,13 +473,13 @@ const PrepareDocument = () => {
             <Row gap={1}>
               <Stack>
                 <Box padding={2}>
-                  <Text>{'Step 3'}</Text>
+                  <Text>{'Langkah 3'}</Text>
                 </Box>
                 <Box padding={2}>
                   <Button
                     onClick={applyFields}
                     accessibilityLabel="Send for signing"
-                    text="Send"
+                    text="Kirim"
                     iconEnd="send"
                   />
                 </Box>
@@ -420,7 +491,7 @@ const PrepareDocument = () => {
           <div className="webviewer" ref={viewer}></div>
         </Column>
       </Box>
-      <input type="file" ref={filePicker} style={{ display: 'none' }} />
+      <input type="file" ref={filePicker} style={{ display: 'none' }} accept=".pdf" onChange={handleFileChange} />
     </div>
   );
 };

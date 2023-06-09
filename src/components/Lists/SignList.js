@@ -37,10 +37,10 @@ const SignList = () => {
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>
-                    <Text weight="bold">From</Text>
+                    <Text weight="bold">Dari</Text>
                   </Table.HeaderCell>
                   <Table.HeaderCell>
-                    <Text weight="bold">When</Text>
+                    <Text weight="bold">Waktu</Text>
                   </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
@@ -51,16 +51,16 @@ const SignList = () => {
                       <Text>{doc.email}</Text>
                     </Table.Cell>
                     <Table.Cell>
-                      <Text>{doc.requestedTime ? new Date(doc.requestedTime.seconds*1000).toDateString() : ''}</Text>
+                      <Text>{doc.requestedTime ? new Date(doc.requestedTime.seconds*1000).toLocaleDateString('id-ID') : ''}</Text>
                     </Table.Cell>
                     <Table.Cell>
                       <Button
                         onClick={event => {
                           const { docRef, docId } = doc;
                           dispatch(setDocToSign({ docRef, docId }));
-                          navigate(`/signDocument`);
+                          navigate(`/tanda-tangan`);
                         }}
-                        text="Sign"
+                        text="Tandatangani"
                         color="blue"
                         inline
                       />
@@ -70,7 +70,7 @@ const SignList = () => {
               </Table.Body>
             </Table>
           ) : (
-            'You do not have any documents to sign'
+            'Anda tidak memiliki dokumen untuk ditandatangani'
           )}
         </div>
       )}

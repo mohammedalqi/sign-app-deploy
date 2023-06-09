@@ -23,26 +23,26 @@ const ProfilePage = () => {
       <Profile />
       <Container>
         <Box padding={3}>
-          <Heading size="md">{`Sign Documents`}</Heading>
+          <Heading size="md">{`Menandatangani Dokumen`}</Heading>
         </Box>
         <Box padding={3}>
           <SignList />
         </Box>
         <Box padding={3}>
-          <Heading size="md">{`Prepare Document`}</Heading>
+          <Heading size="md">{`Siapkan Dokumen`}</Heading>
         </Box>
         <Box padding={2}>
           <Button
             onClick={event => {
-              navigate(`/assignUsers`);
+              navigate(`/kirim`);
             }}
-            text="Prepare Document for Signing"
+            text="Siapkan Dokumen"
             color="blue"
             inline
           />
         </Box>
         <Box padding={3}>
-          <Heading size="md">{`Review Signed Documents`}</Heading>
+          <Heading size="md">{`Tinjau Dokumen yang Ditandatangani`}</Heading>
         </Box>
         <Box padding={3}>
           <SignedList />
